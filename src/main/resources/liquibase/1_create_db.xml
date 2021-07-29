@@ -1,0 +1,157 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+  	<include  file="liquibase/0_common_properties.xml"/>
+    <changeSet author="rikusarlin" id="1_create_db-1">
+        <createTable tableName="PERSON">
+			<column name="id" type="uuid" defaultValueComputed="${uuid_function}">
+    			<constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_PERSON_PK"/>
+			</column>
+            <column name="FIRSTNAME" type="VARCHAR(80)"/>
+            <column name="LASTNAME" type="VARCHAR(80)"/>
+            <column name="PERSONNUMBER" type="VARCHAR(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BIRTHDATE" type="date"/>
+            <column name="GENDER" type="VARCHAR(20)"/>
+            <column name="EMAIL" type="VARCHAR(80)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-2">
+        <addUniqueConstraint columnNames="PERSONNUMBER" constraintName="CONSTRAINT_PERSON_PERSONNUMBER_UNIQUE" tableName="PERSON"/>
+    </changeSet>
+	<!--  
+    <changeSet author="rikusarlin" id="1_create_db-3">
+        <createSequence sequenceName="HIBERNATE_SEQUENCE"/>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-4">
+        <createTable tableName="APPLICATION">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_APPLICATION_PK"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APPLICANT_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RECEIVED" type="TIMESTAMP"/>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-5">
+        <createTable tableName="CASES">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_CASES_PK"/>
+            </column>
+            <column name="CUSTOMER_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CASESTATE" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-6">
+        <createTable tableName="EXPENSE">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_EXPENSE_PK"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DOUBLE(17)"/>
+            <column name="EXPENSETYPE" type="VARCHAR(20)"/>
+            <column name="OTHEREXPENSEDESCRIPTION" type="VARCHAR(200)"/>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-7">
+        <createTable tableName="HOUSEHOLDMEMBER">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_HOUSEHOLDMEMBER_PK"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CUSTOMER_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-8">
+        <createTable tableName="INCOME">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_INCOME_PK"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DOUBLE(17)"/>
+            <column name="INCOMETYPE" type="VARCHAR(20)"/>
+            <column name="OTHERINCOMEDESCRIPTION" type="VARCHAR(200)"/>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    -->
+    <!-- 
+    <changeSet author="rikusarlin" id="1_create_db-9">
+        <createIndex indexName="INDEX_CASES_PK" tableName="CASES">
+            <column name="CUSTOMER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-10">
+        <createIndex indexName="INDEX_INCOME_PK" tableName="INCOME">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-11">
+        <createIndex indexName="INDEX_HOUSEHOLDMEMBER_CASES_FK" tableName="HOUSEHOLDMEMBER">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-12">
+        <createIndex indexName="INDEX_HOUSEHOLDMEMBER_PERSON_FK" tableName="HOUSEHOLDMEMBER">
+            <column name="CUSTOMER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-13">
+        <createIndex indexName="INDEX_APPLICATION_PERSON_FK" tableName="APPLICATION">
+            <column name="APPLICANT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-14">
+        <createIndex indexName="INDEX_APPLICATION_CASES_FK" tableName="APPLICATION">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-15">
+        <createIndex indexName="INDEX_EXPENSE_CASES_FK" tableName="EXPENSE">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-16">
+        <addForeignKeyConstraint baseColumnNames="CUSTOMER_ID" baseTableName="CASES" constraintName="CONSTRAINT_CASES_CUSTOMER_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PERSON" validate="true"/>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-17">
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="INCOME" constraintName="CONSTRAINT_INCOME_CASES_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-18">
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="HOUSEHOLDMEMBER" constraintName="CONSTRAINT_HOUSEHOLDMEMBER_CASES_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-19">
+        <addForeignKeyConstraint baseColumnNames="CUSTOMER_ID" baseTableName="HOUSEHOLDMEMBER" constraintName="CONSTRAINT_HOUSEHOLDMEMBER_PERSON_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PERSON" validate="true"/>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-20">
+        <addForeignKeyConstraint baseColumnNames="APPLICANT_ID" baseTableName="APPLICATION" constraintName="CONSTRAINT_APPLICATION_PERSON_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PERSON" validate="true"/>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-21">
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="EXPENSE" constraintName="CONSTRAINT_EXPENSE_CASES_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+    <changeSet author="rikusarlin" id="1_create_db-22">
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="APPLICATION" constraintName="CONSTRAINT_APPLICATION_CASES_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+     -->
+</databaseChangeLog>
