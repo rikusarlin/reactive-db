@@ -25,4 +25,5 @@ A PostgreSQL instance and database need to be running in the following address:
 ## Inspiration
 The following links provided valuable information for this demo project:
 * [Error Handling in Spring Webflux](https://dzone.com/articles/error-handling-in-spring-webflux)
+* [Spring WebFlux Validation](https://www.vinsguru.com/spring-webflux-validation/)
 
