@@ -3,8 +3,11 @@ package fi.rikusarlin.reactivedb.handler;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -17,8 +20,11 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Component
+@Controller
 @RequiredArgsConstructor
 public class PersonHandler {
+
+	static Logger logger = LoggerFactory.getLogger(PersonHandler.class);
 
 	private MediaType json = MediaType.APPLICATION_JSON;
 
@@ -26,10 +32,13 @@ public class PersonHandler {
 
 	public Mono<ServerResponse> getAll(ServerRequest request) {
 		return personServer.findAllPersons().collectList()
+				.checkpoint("findAllPersons")
 				.flatMap(list -> list.isEmpty() ?
 						ServerResponse.noContent().build() :
 							ServerResponse.ok().contentType(json).body(list, Person.class))
-				.onErrorResume(error -> ServerResponse.badRequest().build());
+				.checkpoint("contentMapped")
+				.onErrorResume(error -> ServerResponse.badRequest().build())
+				.checkpoint("onErrorResume");
 	}
 
 	public Mono<ServerResponse> getById(ServerRequest request) {
@@ -56,6 +65,8 @@ public class PersonHandler {
 	}
 
 	public Mono<ServerResponse> createPerson(ServerRequest request) {
+
+		logger.info("Just entered createPerson");
 		final String principalName = (request.principal().block() != null) ? request.principal().block().getName() : "" ;
 		return request.bodyToMono(Person.class)
 				.flatMap(newPers -> personServer.createNewPerson(newPers, principalName))
