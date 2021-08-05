@@ -1,8 +1,6 @@
 package fi.rikusarlin.reactivedb.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -18,18 +16,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import fi.rikusarlin.reactivedb.validation.ValidEmailAddress;
 import fi.rikusarlin.reactivedb.validation.ValidPersonNumber;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A natural person residing in Finland
  */
-
-@Getter
-@Setter
 public class Person extends EntityBase{
-    @ValidPersonNumber
+	@ValidPersonNumber
 	@NotNull(message = "Person number can not be empty")
 	@Size(min = 11, max = 11)
     @Column(value = "personNumber")	
@@ -60,16 +52,52 @@ public class Person extends EntityBase{
     @Column(value = "email")	
 	private String email;
     
-    @Builder
-    public Person(UUID id, LocalDateTime created, String creator, LocalDateTime modified, String modifier,
-    		String personNumber, String firstName, String lastName, LocalDate birthDate, Gender gender, String email) {
-    	super(id, created, creator, modified, modifier);
-    	this.personNumber = personNumber;
-    	this.firstName = firstName;
-    	this.lastName = lastName;
-    	this.birthDate = birthDate;
-    	this.gender = gender;
-    	this.email = email;
-    }
+    public String getPersonNumber() {
+		return personNumber;
+	}
+
+	public void setPersonNumber(String personNumber) {
+		this.personNumber = personNumber;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public LocalDate getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }
 

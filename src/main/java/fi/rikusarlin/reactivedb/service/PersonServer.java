@@ -9,22 +9,29 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fi.rikusarlin.reactivedb.exception.InvalidPersonException;
+import fi.rikusarlin.reactivedb.handler.PersonHandler;
 import fi.rikusarlin.reactivedb.model.Person;
 import fi.rikusarlin.reactivedb.repository.PersonRepository;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 public class PersonServer {
 
+	
 	private final PersonRepository personRepository;
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+	static Logger logger = LoggerFactory.getLogger(PersonHandler.class);
 
+	public PersonServer(PersonRepository repository) {
+		this.personRepository = repository;
+	}
+	
 	public Flux<Person> findAllPersons() {
 		return personRepository.findAll();
 	}
@@ -61,9 +68,7 @@ public class PersonServer {
 		Validator validator = factory.getValidator();
 		Set<ConstraintViolation<Person>> violations = validator.validate(updatedPerson);
 		if(!violations.isEmpty()) {
-			InvalidPersonException ipe = new InvalidPersonException();
-			ipe.setViolations(violations);
-			return Mono.error(ipe);
+			return Mono.error(new InvalidPersonException(violations));
 		}
 
 		return Mono.just(updatedPerson)

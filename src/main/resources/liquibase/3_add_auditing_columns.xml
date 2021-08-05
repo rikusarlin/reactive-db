@@ -4,7 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">   
-  <changeSet  author="s015sir" id="3_add_auditing_columns_1">
+  <changeSet  author="rikusarlin" id="3_add_auditing_columns_1">
   	<preConditions onFail="MARK_RAN">
         <not><columnExists tableName="PERSON" columnName="CREATED"/></not>
     </preConditions>
@@ -22,7 +22,7 @@
     </rollback>
   </changeSet>
   <!--  
-  <changeSet  author="s015sir" id="3_add_auditing_columns_2">
+  <changeSet  author="rikusarlin" id="3_add_auditing_columns_2">
   	<preConditions onFail="MARK_RAN">
         <not><columnExists tableName="CASES" columnName="CREATED"/></not>
     </preConditions>
@@ -39,7 +39,7 @@
     	<dropColumn tableName="CASES" columnName="MODIFIER"/>
     </rollback>
   </changeSet>  
-  <changeSet  author="s015sir" id="3_add_auditing_columns_3">
+  <changeSet  author="rikusarlin" id="3_add_auditing_columns_3">
   	<preConditions onFail="MARK_RAN">
         <not><columnExists tableName="APPLICATION" columnName="CREATED"/></not>
     </preConditions>
@@ -56,7 +56,7 @@
     	<dropColumn tableName="APPLICATION" columnName="MODIFIER"/>
     </rollback>
   </changeSet>  
-  <changeSet  author="s015sir" id="3_add_auditing_columns_4">
+  <changeSet  author="rikusarlin" id="3_add_auditing_columns_4">
   	<preConditions onFail="MARK_RAN">
         <not><columnExists tableName="EXPENSE" columnName="CREATED"/></not>
     </preConditions>
@@ -73,7 +73,7 @@
     	<dropColumn tableName="EXPENSE" columnName="MODIFIER"/>
     </rollback>
   </changeSet>  
-  <changeSet  author="s015sir" id="3_add_auditing_columns_5">
+  <changeSet  author="rikusarlin" id="3_add_auditing_columns_5">
   	<preConditions onFail="MARK_RAN">
         <not><columnExists tableName="INCOME" columnName="CREATED"/></not>
     </preConditions>
@@ -90,7 +90,7 @@
     	<dropColumn tableName="INCOME" columnName="MODIFIER"/>
     </rollback>
   </changeSet>  
-  <changeSet  author="s015sir" id="3_add_auditing_columns_6">
+  <changeSet  author="rikusarlin" id="3_add_auditing_columns_6">
   	<preConditions onFail="MARK_RAN">
         <not><columnExists tableName="HOUSEHOLDMEMBER" columnName="CREATED"/></not>
     </preConditions>

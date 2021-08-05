@@ -9,5 +9,4 @@
 	<property name="now_function" value="CURRENT_TIMESTAMP()" dbms="mssql"/>
 	<property name="now_function" value="CURRENT_TIMESTAMP()" dbms="oracle"/>
 	<property name="now_function" value="CURRENT_TIMESTAMP()" dbms="h2"/>
-	
 </databaseChangeLog>

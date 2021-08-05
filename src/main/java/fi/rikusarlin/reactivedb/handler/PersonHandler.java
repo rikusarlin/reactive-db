@@ -16,12 +16,10 @@ import fi.rikusarlin.reactivedb.exception.ExceptionUtils;
 import fi.rikusarlin.reactivedb.exception.InvalidPersonException;
 import fi.rikusarlin.reactivedb.model.Person;
 import fi.rikusarlin.reactivedb.service.PersonServer;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Component
 @Controller
-@RequiredArgsConstructor
 public class PersonHandler {
 
 	static Logger logger = LoggerFactory.getLogger(PersonHandler.class);
@@ -30,15 +28,14 @@ public class PersonHandler {
 
 	private final PersonServer personServer;
 
+	public PersonHandler(PersonServer server) {
+		this.personServer = server;
+	}
+	
 	public Mono<ServerResponse> getAll(ServerRequest request) {
 		return personServer.findAllPersons().collectList()
-				.checkpoint("findAllPersons")
-				.flatMap(list -> list.isEmpty() ?
-						ServerResponse.noContent().build() :
-							ServerResponse.ok().contentType(json).body(list, Person.class))
-				.checkpoint("contentMapped")
-				.onErrorResume(error -> ServerResponse.badRequest().build())
-				.checkpoint("onErrorResume");
+				.doOnEach(person -> logger.debug(person.toString()))
+				.flatMap(list -> ServerResponse.ok().contentType(json).bodyValue(list));
 	}
 
 	public Mono<ServerResponse> getById(ServerRequest request) {
@@ -47,11 +44,9 @@ public class PersonHandler {
 			return personServer
 					.findById(UUID.fromString(idParam))
 					.flatMap(data -> ServerResponse.ok().contentType(json).bodyValue(data))
-					.switchIfEmpty(ServerResponse.notFound().build())
-					.onErrorResume(error -> ServerResponse.badRequest().build());
+					.switchIfEmpty(ServerResponse.notFound().build());
 		} catch (IllegalArgumentException iae) {
-			Mono<ErrorInfo> errorInfo = Mono.just(
-					ErrorInfo.builder().field("UUID").message("Illegal UUID value " + idParam).timestamp(LocalDateTime.now()).build());
+			Mono<ErrorInfo> errorInfo = Mono.just(new ErrorInfo("UUID", "Illegal UUID value " + idParam, LocalDateTime.now()));
 			return ServerResponse.badRequest().contentType(json).body(errorInfo, ErrorInfo.class);
 		}
 	}
@@ -60,21 +55,17 @@ public class PersonHandler {
 		return personServer.findByLastName(request.pathVariable("lastName")).collectList()
 				.flatMap(list -> list.isEmpty() ?
 						ServerResponse.noContent().build() :
-						ServerResponse.ok().contentType(json).body(list, Person.class))
-				.onErrorResume(error -> ServerResponse.badRequest().build());
+						ServerResponse.ok().contentType(json).bodyValue(list));
 	}
 
 	public Mono<ServerResponse> createPerson(ServerRequest request) {
-
-		logger.info("Just entered createPerson");
 		final String principalName = (request.principal().block() != null) ? request.principal().block().getName() : "" ;
 		return request.bodyToMono(Person.class)
 				.flatMap(newPers -> personServer.createNewPerson(newPers, principalName))
 				.flatMap(data -> ServerResponse.ok().contentType(json).bodyValue(data))
 				.onErrorResume(InvalidPersonException.class, 
 						ex -> ServerResponse.badRequest().contentType(json).body(
-								Mono.just(ExceptionUtils.listValidationErrors(ex.getViolations())), ErrorInfo.class))
-				.onErrorResume(error -> ServerResponse.badRequest().build());
+								Mono.just(ExceptionUtils.listValidationErrors(ex.getViolations())), ErrorInfo.class));
 	}
 
 	public Mono<ServerResponse> updatePerson(ServerRequest request) {
@@ -86,20 +77,16 @@ public class PersonHandler {
 				.switchIfEmpty(ServerResponse.notFound().build())
 				.onErrorResume(InvalidPersonException.class, 
 						ex -> ServerResponse.badRequest().contentType(json).body(
-								Mono.just(ExceptionUtils.listValidationErrors(ex.getViolations())), ErrorInfo.class))
-				.onErrorResume(error -> ServerResponse.badRequest().build());
+								Mono.just(ExceptionUtils.listValidationErrors(ex.getViolations())), ErrorInfo.class));
 	}
 
 	public Mono<ServerResponse> deletePerson(ServerRequest request) {
 		String idParam = request.pathVariable("id");
 		try {
 			return personServer.deletePerson(UUID.fromString(idParam))
-					.flatMap(data -> ServerResponse.ok().contentType(json).bodyValue(data))
-					.switchIfEmpty(ServerResponse.notFound().build())
-					.onErrorResume(error -> ServerResponse.badRequest().build());
+					.flatMap(data -> ServerResponse.ok().contentType(json).bodyValue(data));
 		} catch (IllegalArgumentException iae) {
-			Mono<ErrorInfo> errorInfo = Mono.just(
-					ErrorInfo.builder().field("UUID").message("Illegal UUID value " + idParam).timestamp(LocalDateTime.now()).build());
+			Mono<ErrorInfo> errorInfo = Mono.just(new ErrorInfo("UUID", "Illegal UUID value " + idParam, LocalDateTime.now()));
 			return ServerResponse.badRequest().contentType(json).body(errorInfo, ErrorInfo.class);
 		}
 	}

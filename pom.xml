@@ -29,11 +29,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
 		<!-- Needed by Liquibase -->
 		<dependency>
     		<groupId>org.liquibase</groupId>
@@ -43,7 +38,14 @@
   			<groupId>org.springframework.boot</groupId>
   			<artifactId>spring-boot-starter-data-jdbc</artifactId>
 		</dependency>
-
+		<!-- Needed by H2 console only in case needed - not compatible with spring-boot-starter-webflux -->
+		<!--    
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		-->
+		
 		<dependency>
 			<groupId>io.r2dbc</groupId>
 			<artifactId>r2dbc-postgresql</artifactId>
@@ -79,7 +81,7 @@
              <artifactId>junit-jupiter-engine</artifactId>
              <scope>test</scope>
         </dependency>
-        <dependency>
+		<dependency>
              <groupId>junit</groupId>
              <artifactId>junit</artifactId>
              <scope>test</scope>

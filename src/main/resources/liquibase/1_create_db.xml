@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
   	<include  file="liquibase/0_common_properties.xml"/>
-    <changeSet author="rikusarlin" id="1_create_db-1">
+	<changeSet author="rikusarlin" id="1_create_db-1">
         <createTable tableName="PERSON">
 			<column name="id" type="uuid" defaultValueComputed="${uuid_function}">
     			<constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_PERSON_PK"/>

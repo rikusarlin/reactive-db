@@ -17,11 +17,11 @@ public class ExceptionUtils {
     public static <T> List<ErrorInfo> listValidationErrors(Set<ConstraintViolation<T>> violations) {
     	List<ErrorInfo> errors = new ArrayList<ErrorInfo>();
         for(ConstraintViolation<T> violation:violations) {
-        	errors.add(ErrorInfo.builder()
-        			.field(violation.getPropertyPath().toString())
-        			.message(violation.getMessage())
-        			.timestamp(LocalDateTime.now())
-        			.build());
+        	ErrorInfo newError = new ErrorInfo();
+        	newError.setField(violation.getPropertyPath().toString());
+        	newError.setMessage(violation.getMessage());
+        	newError.setTimestamp(LocalDateTime.now());
+        	errors.add(newError);
         }
         return errors;
     }
