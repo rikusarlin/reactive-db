@@ -59,7 +59,7 @@ public class PersonHandler {
 	}
 
 	public Mono<ServerResponse> createPerson(ServerRequest request) {
-		final String principalName = (request.principal().block() != null) ? request.principal().block().getName() : "" ;
+		final String principalName = "User"; //This one we should get from security context
 		return request.bodyToMono(Person.class)
 				.flatMap(newPers -> personServer.createNewPerson(newPers, principalName))
 				.flatMap(data -> ServerResponse.ok().contentType(json).bodyValue(data))
@@ -69,7 +69,7 @@ public class PersonHandler {
 	}
 
 	public Mono<ServerResponse> updatePerson(ServerRequest request) {
-		final String principalName = (request.principal().block() != null) ? request.principal().block().getName() : "" ;
+		final String principalName = "User"; //This one we should get from security context
 		return request
 				.bodyToMono(Person.class)
 				.flatMap(updatedPerson -> personServer.updatePerson(updatedPerson, principalName))

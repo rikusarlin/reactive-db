@@ -13,13 +13,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import fi.rikusarlin.reactivedb.exception.ExceptionUtils;
+import fi.rikusarlin.reactivedb.model.Gender;
 import fi.rikusarlin.reactivedb.model.Person;
 import fi.rikusarlin.reactivedb.testdata.PersonData;
 
-public class PersonTest 
+public class PersonTests 
 {
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	Set<ConstraintViolation<Person>> violations;
+	ExceptionUtils exeptionUtils = new ExceptionUtils();
 	
 	private List<String> getMessages(Set<ConstraintViolation<Person>> violations){
 		return violations
@@ -66,6 +68,42 @@ public class PersonTest
         List<String> messages = getMessages(violations);
         Assertions.assertTrue(messages.contains("personNumber: size must be between 11 and 11"));
         Assertions.assertTrue(messages.contains("personNumber: invalid person number '010100A900'"));
+    }
+
+    @Test
+    public void testInvalidDateInPersonNumber()
+    {
+    	Person p1 = PersonData.getPerson1();
+    	p1.setPersonNumber("31YY70-904N");
+    	violations = validator.validate(p1);
+        Assertions.assertTrue(!violations.isEmpty());
+        Assertions.assertTrue(violations.size() == 1);
+        List<String> messages = getMessages(violations);
+        Assertions.assertTrue(messages.contains("personNumber: invalid person number '31YY70-904N'"));
+    }
+
+    @Test
+    public void testInvalidCenturyMarker()
+    {
+    	Person p1 = PersonData.getPerson1();
+    	p1.setPersonNumber("010170C904N");
+    	violations = validator.validate(p1);
+        Assertions.assertTrue(!violations.isEmpty());
+        Assertions.assertTrue(violations.size() == 1);
+        List<String> messages = getMessages(violations);
+        Assertions.assertTrue(messages.contains("personNumber: invalid person number '010170C904N'"));
+    }
+
+    @Test
+    public void testInvalidIndividualNumber()
+    {
+    	Person p1 = PersonData.getPerson1();
+    	p1.setPersonNumber("010170-NNNN");
+    	violations = validator.validate(p1);
+        Assertions.assertTrue(!violations.isEmpty());
+        Assertions.assertTrue(violations.size() == 1);
+        List<String> messages = getMessages(violations);
+        Assertions.assertTrue(messages.contains("personNumber: invalid person number '010170-NNNN'"));
     }
 
     @Test
@@ -163,6 +201,18 @@ public class PersonTest
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
         Assertions.assertTrue(getMessages(violations).contains("email: invalid emailAddress 'username@yahoo..com'"));
+    }
+
+    @Test
+    public void testInvalidGender()
+    {
+    	Person p1 = PersonData.getPerson1();
+    	
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        	p1.setGender(Gender.fromValue("ThereIsNoSuchSex"));
+        });
+        Assertions.assertTrue(exception.getMessage().contains("Unexpected value 'ThereIsNoSuchSex'"));
+    	
     }
 
     @AfterEach

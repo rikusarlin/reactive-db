@@ -25,10 +25,12 @@ public enum Gender {
     return value;
   }
 
+  /*
   @Override
   public String toString() {
     return String.valueOf(value);
   }
+  */
 
   @JsonCreator
   public static Gender fromValue(String value) {

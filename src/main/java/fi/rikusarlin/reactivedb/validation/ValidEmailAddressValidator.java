@@ -25,14 +25,6 @@ public class ValidEmailAddressValidator implements ConstraintValidator<ValidEmai
 			return true;
 		}
 
-		if(!(value instanceof String)) {
-			return false;
-		}
-
-		if(value=="") {
-			return true;
-		}
-
 		String email = (String) value;
 		Matcher matcher = pattern.matcher(email);
 		

@@ -27,8 +27,10 @@ public class ExceptionUtils {
     }
 
     public static <T> void logValidationErrors(Set<ConstraintViolation<T>> violations) {
-        for(ConstraintViolation<T> violation:violations) {
-        	logger.info(violation.getPropertyPath() + ": " + violation.getMessage());
-        }
+    	if(violations != null) {
+    		for(ConstraintViolation<T> violation:violations) {
+    			logger.info(violation.getPropertyPath() + ": " + violation.getMessage());
+    		}
+    	}
     }
 }
