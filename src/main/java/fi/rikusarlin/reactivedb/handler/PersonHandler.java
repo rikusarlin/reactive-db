@@ -83,8 +83,10 @@ public class PersonHandler {
 	public Mono<ServerResponse> deletePerson(ServerRequest request) {
 		String idParam = request.pathVariable("id");
 		try {
-			return personServer.deletePerson(UUID.fromString(idParam))
-					.flatMap(data -> ServerResponse.ok().contentType(json).bodyValue(data));
+			UUID id = UUID.fromString(idParam);
+			return personServer.deletePerson(id)
+					.flatMap(data -> ServerResponse.ok().build())
+					.switchIfEmpty(ServerResponse.notFound().build());
 		} catch (IllegalArgumentException iae) {
 			Mono<ErrorInfo> errorInfo = Mono.just(new ErrorInfo("UUID", "Illegal UUID value " + idParam, LocalDateTime.now()));
 			return ServerResponse.badRequest().contentType(json).body(errorInfo, ErrorInfo.class);

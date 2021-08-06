@@ -75,7 +75,8 @@ public class PersonServer {
 				.flatMap(personRepository::save);
 	}
 
-	public Mono<Void> deletePerson(UUID id) {
-		return personRepository.deleteById(id);
+	public Mono<Object> deletePerson(UUID id) {
+		return personRepository.findById(id)
+				.map(person -> personRepository.delete(person));
 	}
 }

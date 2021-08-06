@@ -206,14 +206,34 @@ public class ServiceTests
     	UUID id = UUID.randomUUID();
 		Person p2 = PersonData.getPerson1();
 		p2.setId(id);
+		Mono<Void> voidMono = Mono.defer(() -> Mono.empty());
 
-        Mockito.when(repository.deleteById(id)).thenReturn(Mono.empty());
+        Mockito.when(repository.findById(Mockito.any(UUID.class))).thenReturn(Mono.just(p2));
+        Mockito.when(repository.delete(Mockito.any(Person.class))).thenReturn(voidMono);
         this.webClient.delete()
             .uri("/persons/"+id.toString())
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk();
-        Mockito.verify(repository, times(1)).deleteById(id);
+        Mockito.verify(repository, times(1)).findById(id);
+        Mockito.verify(repository, times(1)).delete(Mockito.any(Person.class));
+    }
+
+    @Test
+    void testDeletePerson_NotFound() {
+    	UUID id = UUID.randomUUID();
+		Person p2 = PersonData.getPerson1();
+		p2.setId(id);
+
+        Mockito.when(repository.findById(Mockito.any(UUID.class))).thenReturn(Mono.empty());
+        Mockito.when(repository.delete(Mockito.any(Person.class))).thenReturn(Mono.empty());
+        this.webClient.delete()
+            .uri("/persons/"+id.toString())
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isNotFound();
+        Mockito.verify(repository, times(1)).findById(id);
+        Mockito.verify(repository, times(0)).delete(Mockito.any(Person.class));
     }
 
     @Test

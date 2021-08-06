@@ -237,13 +237,28 @@ public class HandlerTests
     	UUID id = UUID.randomUUID();
 		Person p2 = PersonData.getPerson1();
 		p2.setId(id);
+		
+        Mockito.when(personServer.deletePerson(id)).thenReturn(Mono.just(Boolean.TRUE));
+        this.webClient.delete()
+            .uri("/persons/"+id.toString())
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isOk();
+        Mockito.verify(personServer, times(1)).deletePerson(id);
+    }
+
+    @Test
+    void testDeletePerson_NotFound() {
+    	UUID id = UUID.randomUUID();
+		Person p2 = PersonData.getPerson1();
+		p2.setId(id);
 
         Mockito.when(personServer.deletePerson(id)).thenReturn(Mono.empty());
         this.webClient.delete()
             .uri("/persons/"+id.toString())
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
-            .expectStatus().isOk();
+            .expectStatus().isNotFound();
         Mockito.verify(personServer, times(1)).deletePerson(id);
     }
 
